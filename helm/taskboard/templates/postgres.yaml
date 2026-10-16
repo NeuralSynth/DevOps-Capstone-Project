@@ -30,6 +30,8 @@ spec:
         - {name: POSTGRES_DB, value: "{{ .Values.postgres.database }}"}
         - {name: POSTGRES_USER, valueFrom: {secretKeyRef: {name: taskboard-postgres, key: username}}}
         - {name: POSTGRES_PASSWORD, valueFrom: {secretKeyRef: {name: taskboard-postgres, key: password}}}
+        # Block volumes (e.g. EBS) contain lost+found at the mount root, which initdb rejects
+        - {name: PGDATA, value: /var/lib/postgresql/data/pgdata}
         readinessProbe: {exec: {command: ["sh","-c","pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]}, initialDelaySeconds: 5, periodSeconds: 10}
         volumeMounts: [{name: data, mountPath: /var/lib/postgresql/data}]
       volumes: [{name: data, persistentVolumeClaim: {claimName: taskboard-postgres-data}}]
