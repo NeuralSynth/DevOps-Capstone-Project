@@ -43,14 +43,14 @@ jobs:
           docker build -t $IMAGE_PREFIX/taskboard-backend:${{ github.sha }} -t $IMAGE_PREFIX/taskboard-backend:latest ./backend
           docker build -t $IMAGE_PREFIX/taskboard-frontend:${{ github.sha }} -t $IMAGE_PREFIX/taskboard-frontend:latest ./frontend
       - name: Scan backend
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_PREFIX }}/taskboard-backend:${{ github.sha }}
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: '1'
       - name: Scan frontend
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_PREFIX }}/taskboard-frontend:${{ github.sha }}
           severity: HIGH,CRITICAL
