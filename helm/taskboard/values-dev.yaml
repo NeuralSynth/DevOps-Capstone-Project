@@ -1,6 +1,8 @@
 replicaCount: 1
 ingress:
   enabled: true
+  className: nginx
   host: taskboard.local
+  annotations: null        # drop the ALB-specific annotations
 hpa:
   enabled: false

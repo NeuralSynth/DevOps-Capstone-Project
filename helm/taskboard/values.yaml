@@ -14,7 +14,12 @@ postgres:
   password: taskboard
 ingress:
   enabled: false
-  host: taskboard.local
+  className: alb            # AWS Load Balancer Controller on EKS; use "nginx" for ingress-nginx
+  host: ""                  # empty = match any host (use the ALB's DNS name)
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /
 hpa:
   enabled: true
   minReplicas: 2

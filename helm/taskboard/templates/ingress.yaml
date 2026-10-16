@@ -1,13 +1,20 @@
 {{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
-metadata: {name: taskboard}
+metadata:
+  name: taskboard
+  {{- with .Values.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
-  - host: {{ .Values.ingress.host }}
+  - {{- if .Values.ingress.host }}
+    host: {{ .Values.ingress.host }}
+    {{- end }}
     http:
       paths:
-      - {path: /api, pathType: Prefix, backend: {service: {name: taskboard-backend, port: {number: 8080}}}}
+      - {path: /api, pathType: Prefix, backend: {service: {name: {{ include "taskboard.fullname" . }}-backend, port: {number: 8000}}}}
       - {path: /, pathType: Prefix, backend: {service: {name: taskboard-frontend, port: {number: 80}}}}
 {{- end }}
