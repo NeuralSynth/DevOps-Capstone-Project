@@ -1,4 +1,4 @@
-name: TaskBoard Python CI/CD
+name: LiftLog Python CI/CD
 on:
   push:
     branches: [main]
@@ -40,42 +40,41 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build images
         run: |
-          docker build -t $IMAGE_PREFIX/taskboard-backend:${{ github.sha }} -t $IMAGE_PREFIX/taskboard-backend:latest ./backend
-          docker build -t $IMAGE_PREFIX/taskboard-frontend:${{ github.sha }} -t $IMAGE_PREFIX/taskboard-frontend:latest ./frontend
+          docker build -t $IMAGE_PREFIX/liftlog-backend:${{ github.sha }} -t $IMAGE_PREFIX/liftlog-backend:latest ./backend
+          docker build -t $IMAGE_PREFIX/liftlog-frontend:${{ github.sha }} -t $IMAGE_PREFIX/liftlog-frontend:latest ./frontend
       - name: Scan backend
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{ env.IMAGE_PREFIX }}/taskboard-backend:${{ github.sha }}
+          image-ref: ${{ env.IMAGE_PREFIX }}/liftlog-backend:${{ github.sha }}
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: '1'
       - name: Scan frontend
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{ env.IMAGE_PREFIX }}/taskboard-frontend:${{ github.sha }}
+          image-ref: ${{ env.IMAGE_PREFIX }}/liftlog-frontend:${{ github.sha }}
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: '1'
       - name: Push images
         run: |
-          docker push --all-tags $IMAGE_PREFIX/taskboard-backend
-          docker push --all-tags $IMAGE_PREFIX/taskboard-frontend
-  deploy:
-    # Needs a kubeconfig that works from the runner. EKS kubeconfigs authenticate with AWS
-    # credentials, so this job only runs when the KUBE_DEPLOY repository variable is 'true'.
-    if: github.ref == 'refs/heads/main' && vars.KUBE_DEPLOY == 'true'
+          docker push --all-tags $IMAGE_PREFIX/liftlog-backend
+          docker push --all-tags $IMAGE_PREFIX/liftlog-frontend
+  update-gitops:
+    # GitOps deploy: record the new image SHA in Git; Argo CD on EKS pulls the change and rolls it out.
+    # No cloud credentials are needed in CI. Pushes made with GITHUB_TOKEN don't trigger new workflow runs.
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs: build-scan-push
     runs-on: ubuntu-latest
-    permissions: {contents: read, packages: read}
+    permissions: {contents: write}
     steps:
       - uses: actions/checkout@v4
-      - uses: azure/setup-helm@v4
-      - name: Configure kubectl
-        env: {KUBE_CONFIG_DATA: '${{ secrets.KUBE_CONFIG_DATA }}'}
+      - name: Point values-eks.yaml at the images built from this commit
         run: |
-          mkdir -p ~/.kube
-          echo "$KUBE_CONFIG_DATA" | base64 -d > ~/.kube/config
-      - name: Deploy with Helm
-        run: |
-          IMAGE_PREFIX=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}
-          helm upgrade --install taskboard ./helm/taskboard -n taskboard --create-namespace             --set backend.tag=${{ github.sha }}             --set frontend.tag=${{ github.sha }}             --set backend.image=$IMAGE_PREFIX/taskboard-backend             --set frontend.image=$IMAGE_PREFIX/taskboard-frontend
+          sed -i -E "s/^(  tag: ).*/\1${GITHUB_SHA}/" helm/liftlog/values-eks.yaml
+          git diff --stat
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "deploy: liftlog images ${GITHUB_SHA::7}" || { echo "Already up to date"; exit 0; }
+          git pull --rebase origin main
+          git push origin HEAD:main
