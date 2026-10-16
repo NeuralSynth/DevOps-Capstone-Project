@@ -1,7 +1,7 @@
 module "vpc" {
   source             = "terraform-aws-modules/vpc/aws"
   version            = "6.7.3"
-  name               = "taskboard-vpc"
+  name               = "liftlog-vpc"
   cidr               = "10.20.0.0/16"
   azs                = ["${var.aws_region}a", "${var.aws_region}b"]
   private_subnets    = ["10.20.1.0/24", "10.20.2.0/24"]
@@ -48,6 +48,22 @@ module "eks" {
       min_size       = 2
       max_size       = 2
       desired_size   = 2
+    }
+  }
+}
+
+# IAM role for the AWS Load Balancer Controller, which turns Ingress resources into ALBs
+module "lb_controller_pod_identity" {
+  source                          = "terraform-aws-modules/eks-pod-identity/aws"
+  version                         = "2.9.0"
+  name                            = "${var.cluster_name}-lb-controller"
+  attach_aws_lb_controller_policy = true
+
+  associations = {
+    controller = {
+      cluster_name    = module.eks.cluster_name
+      namespace       = "kube-system"
+      service_account = "aws-load-balancer-controller"
     }
   }
 }
