@@ -4,18 +4,19 @@ LiftLog is a strength-training log: build an exercise library, log every workout
 
 It's also a complete DevOps capstone: the app is tested, containerised, scanned, published by CI, provisioned on AWS with Terraform, deployed to EKS with Helm through **GitOps (Argo CD)**, and monitored with Prometheus and Grafana.
 
+Video Link: [Presentation Video](https://youtu.be/2FtC1-wvGKg)
 ---
 
 ## Features
 
-| Area | What you can do |
-| :--- | :--- |
-| **Exercise library** | 21 starter exercises (seeded by the database migration), grouped by muscle group and equipment; add, rename and delete your own. Exercises used in a workout can't be deleted. |
-| **Workout logging** | Log a session with any number of exercises and sets: weight (kg), reps and optional RPE, plus duration and notes. Edit or delete workouts later. |
-| **History** | Every workout with its sets per exercise, total sets and total volume (kg lifted). |
-| **Personal records** ⭐ | Best set per exercise, ranked by **estimated 1RM** (Epley: `weight × (1 + reps / 30)`). |
-| **Volume analytics** ⭐ | Workouts and volume over the last 7 days; volume per muscle group over the last 30 days. |
-| **Progress charts** ⭐ | Estimated 1RM and top-set weight over time for any exercise. |
+| Area                    | What you can do                                                                                                                                                                |
+|:------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Exercise library**    | 21 starter exercises (seeded by the database migration), grouped by muscle group and equipment; add, rename and delete your own. Exercises used in a workout can't be deleted. |
+| **Workout logging**     | Log a session with any number of exercises and sets: weight (kg), reps and optional RPE, plus duration and notes. Edit or delete workouts later.                               |
+| **History**             | Every workout with its sets per exercise, total sets and total volume (kg lifted).                                                                                             |
+| **Personal records** ⭐ | Best set per exercise, ranked by **estimated 1RM** (Epley: `weight × (1 + reps / 30)`).                                                                                        |
+| **Volume analytics** ⭐ | Workouts and volume over the last 7 days; volume per muscle group over the last 30 days.                                                                                       |
+| **Progress charts** ⭐  | Estimated 1RM and top-set weight over time for any exercise.                                                                                                                   |
 
 ⭐ = "premium" analytics.
 
@@ -30,15 +31,15 @@ git push ──► GitHub Actions: pytest + frontend build ──► docker buil
                                      └──► commit the new SHA to helm/liftlog/values-eks.yaml ──► Argo CD ──► EKS
 ```
 
-| Layer | Technology |
-| :--- | :--- |
-| Frontend | React 19, Vite 8, nginx (`nginxinc/nginx-unprivileged`) |
-| Backend | Python 3.12, FastAPI, SQLAlchemy 2, Alembic, Pydantic 2, `prometheus-fastapi-instrumentator` |
-| Database | PostgreSQL 16 |
-| CI/CD | GitHub Actions → GHCR, Trivy, GitOps with Argo CD |
+| Layer          | Technology                                                                                                                                |
+|:---------------|:------------------------------------------------------------------------------------------------------------------------------------------|
+| Frontend       | React 19, Vite 8, nginx (`nginxinc/nginx-unprivileged`)                                                                                   |
+| Backend        | Python 3.12, FastAPI, SQLAlchemy 2, Alembic, Pydantic 2, `prometheus-fastapi-instrumentator`                                              |
+| Database       | PostgreSQL 16                                                                                                                             |
+| CI/CD          | GitHub Actions → GHCR, Trivy, GitOps with Argo CD                                                                                         |
 | Infrastructure | Terraform: AWS VPC (2 public + 2 private subnets) and EKS 1.36, with EBS CSI driver and AWS Load Balancer Controller via EKS Pod Identity |
-| Kubernetes | Helm chart (`helm/liftlog`), HPA, ALB Ingress (`/` → frontend, `/api` → backend) |
-| Observability | kube-prometheus-stack, ServiceMonitor, Grafana dashboard as code |
+| Kubernetes     | Helm chart (`helm/liftlog`), HPA, ALB Ingress (`/` → frontend, `/api` → backend)                                                          |
+| Observability  | kube-prometheus-stack, ServiceMonitor, Grafana dashboard as code                                                                          |
 
 ## Repository layout
 
@@ -61,11 +62,11 @@ troubleshooting/  deliberately broken manifests for practice
 docker compose up --build
 ```
 
-| URL | |
-| :--- | :--- |
-| <http://localhost:3000> | LiftLog UI (on Windows with WSL, use `http://127.0.0.1:3000`) |
-| <http://localhost:8000/docs> | API docs (Swagger UI) |
-| <http://localhost:8000/health> · `/ready` · `/metrics` | Liveness, readiness (checks the DB), Prometheus metrics |
+| URL                                                    |                                                               |
+|:-------------------------------------------------------|:--------------------------------------------------------------|
+| <http://localhost:3000>                                | LiftLog UI (on Windows with WSL, use `http://127.0.0.1:3000`) |
+| <http://localhost:8000/docs>                           | API docs (Swagger UI)                                         |
+| <http://localhost:8000/health> · `/ready` · `/metrics` | Liveness, readiness (checks the DB), Prometheus metrics       |
 
 ### Tests
 
@@ -77,19 +78,19 @@ python -m pytest -v      # uses a throwaway SQLite database, never Postgres
 
 ## API
 
-| Method | Path | Description |
-| :--- | :--- | :--- |
-| GET | `/api/exercises` | List the exercise library |
-| POST | `/api/exercises` | Add an exercise (`409` on duplicate name) |
-| PUT | `/api/exercises/{id}` | Update an exercise |
-| DELETE | `/api/exercises/{id}` | Delete an unused exercise (`409` if it's in a workout) |
-| GET | `/api/exercises/{id}/progress` | Top set, estimated 1RM and volume per workout (oldest first) |
-| GET | `/api/workouts` | List workouts with their sets, newest first |
-| POST | `/api/workouts` | Log a workout with nested `sets` |
-| GET | `/api/workouts/{id}` | One workout |
-| PUT | `/api/workouts/{id}` | Update a workout (`sets`, when given, replaces all sets) |
-| DELETE | `/api/workouts/{id}` | Delete a workout |
-| GET | `/api/stats` | 7-day totals, 30-day muscle-group volume, personal records |
+| Method | Path                           | Description                                                  |
+|:-------|:-------------------------------|:-------------------------------------------------------------|
+| GET    | `/api/exercises`               | List the exercise library                                    |
+| POST   | `/api/exercises`               | Add an exercise (`409` on duplicate name)                    |
+| PUT    | `/api/exercises/{id}`          | Update an exercise                                           |
+| DELETE | `/api/exercises/{id}`          | Delete an unused exercise (`409` if it's in a workout)       |
+| GET    | `/api/exercises/{id}/progress` | Top set, estimated 1RM and volume per workout (oldest first) |
+| GET    | `/api/workouts`                | List workouts with their sets, newest first                  |
+| POST   | `/api/workouts`                | Log a workout with nested `sets`                             |
+| GET    | `/api/workouts/{id}`           | One workout                                                  |
+| PUT    | `/api/workouts/{id}`           | Update a workout (`sets`, when given, replaces all sets)     |
+| DELETE | `/api/workouts/{id}`           | Delete a workout                                             |
+| GET    | `/api/stats`                   | 7-day totals, 30-day muscle-group volume, personal records   |
 
 Example:
 
