@@ -12,6 +12,7 @@ spec:
     targetRevision: main
     path: helm/liftlog
     helm:
+      releaseName: liftlog   # same name as the initial `helm upgrade --install`, so resources are adopted, not duplicated
       valueFiles:
         - values-eks.yaml
   destination:
