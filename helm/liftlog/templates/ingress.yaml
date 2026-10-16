@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: taskboard
+  name: liftlog
   {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -15,6 +15,6 @@ spec:
     {{- end }}
     http:
       paths:
-      - {path: /api, pathType: Prefix, backend: {service: {name: {{ include "taskboard.fullname" . }}-backend, port: {number: 8000}}}}
-      - {path: /, pathType: Prefix, backend: {service: {name: taskboard-frontend, port: {number: 80}}}}
+      - {path: /api, pathType: Prefix, backend: {service: {name: {{ include "liftlog.fullname" . }}-backend, port: {number: 8000}}}}
+      - {path: /, pathType: Prefix, backend: {service: {name: liftlog-frontend, port: {number: 80}}}}
 {{- end }}

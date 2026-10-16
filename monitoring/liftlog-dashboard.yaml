@@ -1,17 +1,17 @@
-# Grafana dashboard for the TaskBoard backend. kube-prometheus-stack's Grafana sidecar
+# Grafana dashboard for the LiftLog backend. kube-prometheus-stack's Grafana sidecar
 # loads every ConfigMap labelled grafana_dashboard: "1".
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: taskboard-dashboard
+  name: liftlog-dashboard
   namespace: monitoring
   labels:
     grafana_dashboard: "1"
 data:
-  taskboard.json: |
+  liftlog.json: |
     {
-      "uid": "taskboard",
-      "title": "TaskBoard API (EKS)",
+      "uid": "liftlog",
+      "title": "LiftLog API (EKS)",
       "schemaVersion": 41,
       "refresh": "10s",
       "time": {
@@ -43,7 +43,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "sum(up{namespace=\"taskboard\"})",
+              "expr": "sum(up{namespace=\"liftlog\"})",
               "legendFormat": "up"
             }
           ],
@@ -73,7 +73,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "sum(rate(http_requests_total{namespace=\"taskboard\"}[1m]))",
+              "expr": "sum(rate(http_requests_total{namespace=\"liftlog\"}[1m]))",
               "legendFormat": "req/s"
             }
           ],
@@ -87,7 +87,7 @@ data:
         {
           "id": 3,
           "type": "stat",
-          "title": "Tasks created (last 30m)",
+          "title": "Workouts logged (last 30m)",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
@@ -105,7 +105,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "sum(increase(http_requests_total{namespace=\"taskboard\",handler=\"/api/tasks\",method=\"POST\"}[30m]))",
+              "expr": "sum(increase(http_requests_total{namespace=\"liftlog\",handler=\"/api/workouts\",method=\"POST\"}[30m]))",
               "legendFormat": "created"
             }
           ],
@@ -135,7 +135,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "sum(process_resident_memory_bytes{namespace=\"taskboard\"})",
+              "expr": "sum(process_resident_memory_bytes{namespace=\"liftlog\"})",
               "legendFormat": "rss"
             }
           ],
@@ -167,7 +167,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "sum by (handler, method) (rate(http_requests_total{namespace=\"taskboard\"}[1m]))",
+              "expr": "sum by (handler, method) (rate(http_requests_total{namespace=\"liftlog\"}[1m]))",
               "legendFormat": "{{method}} {{handler}}"
             }
           ],
@@ -199,7 +199,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "histogram_quantile(0.95, sum by (le, handler) (rate(http_request_duration_seconds_bucket{namespace=\"taskboard\"}[5m])))",
+              "expr": "histogram_quantile(0.95, sum by (le, handler) (rate(http_request_duration_seconds_bucket{namespace=\"liftlog\"}[5m])))",
               "legendFormat": "{{handler}}"
             }
           ],
@@ -231,7 +231,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"taskboard\",container=\"backend\"}[2m]))",
+              "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"liftlog\",container=\"backend\"}[2m]))",
               "legendFormat": "{{pod}}"
             }
           ],
@@ -261,7 +261,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "sum by (status) (rate(http_requests_total{namespace=\"taskboard\"}[1m]))",
+              "expr": "sum by (status) (rate(http_requests_total{namespace=\"liftlog\"}[1m]))",
               "legendFormat": "{{status}}"
             }
           ],

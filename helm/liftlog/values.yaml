@@ -1,17 +1,17 @@
 frontend:
-  image: ghcr.io/YOUR_ORG/taskboard-frontend
+  image: ghcr.io/YOUR_ORG/liftlog-frontend
   tag: latest
 backend:
-  image: ghcr.io/YOUR_ORG/taskboard-backend
+  image: ghcr.io/YOUR_ORG/liftlog-backend
   tag: latest
 replicaCount: 2
-namespace: taskboard
+namespace: liftlog
 imagePullSecrets: []
 postgres:
-  host: taskboard-postgres
-  database: taskboard
-  username: taskboard
-  password: taskboard
+  host: liftlog-postgres
+  database: liftlog
+  username: liftlog
+  password: liftlog
 ingress:
   enabled: false
   className: alb            # AWS Load Balancer Controller on EKS; use "nginx" for ingress-nginx

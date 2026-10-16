@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata: {name: taskboard-frontend, labels: {app: taskboard-frontend}}
+metadata: {name: liftlog-frontend, labels: {app: liftlog-frontend}}
 spec:
   replicas: {{ .Values.replicaCount }}
-  selector: {matchLabels: {app: taskboard-frontend}}
+  selector: {matchLabels: {app: liftlog-frontend}}
   template:
-    metadata: {labels: {app: taskboard-frontend}}
+    metadata: {labels: {app: liftlog-frontend}}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

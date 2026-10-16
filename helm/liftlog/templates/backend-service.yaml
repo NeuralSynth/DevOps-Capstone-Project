@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "taskboard.fullname" . }}-backend
-  labels: {app: taskboard-backend}
+  name: {{ include "liftlog.fullname" . }}-backend
+  labels: {app: liftlog-backend}
 spec:
-  selector: {app: taskboard-backend}
+  selector: {app: liftlog-backend}
   ports:
     - port: 8000
       targetPort: 8000
@@ -17,7 +17,7 @@ kind: Service
 metadata:
   name: backend
 spec:
-  selector: {app: taskboard-backend}
+  selector: {app: liftlog-backend}
   ports:
     - port: 8000
       targetPort: 8000

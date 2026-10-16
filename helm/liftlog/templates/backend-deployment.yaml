@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "taskboard.fullname" . }}-backend
+  name: {{ include "liftlog.fullname" . }}-backend
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
-    matchLabels: {app: taskboard-backend}
+    matchLabels: {app: liftlog-backend}
   template:
     metadata:
-      labels: {app: taskboard-backend}
+      labels: {app: liftlog-backend}
     spec:
       containers:
         - name: backend

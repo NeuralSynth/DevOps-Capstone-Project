@@ -2,7 +2,7 @@ replicaCount: 1
 ingress:
   enabled: true
   className: nginx
-  host: taskboard.local
+  host: liftlog.local
   annotations: null        # drop the ALB-specific annotations
 hpa:
   enabled: false
