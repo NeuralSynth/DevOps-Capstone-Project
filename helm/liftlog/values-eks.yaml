@@ -3,10 +3,10 @@
 # Argo CD notices the commit and rolls the new images out. Don't edit the tags by hand.
 backend:
   image: ghcr.io/neuralsynth/liftlog-backend
-  tag: 309bcc6b54650263c6e3292203c447c7184182a7
+  tag: 59e3f68cfb878508d046f35d49c366c1a584af24
 frontend:
   image: ghcr.io/neuralsynth/liftlog-frontend
-  tag: 309bcc6b54650263c6e3292203c447c7184182a7
+  tag: 59e3f68cfb878508d046f35d49c366c1a584af24
 ingress:
   enabled: true
   className: alb
