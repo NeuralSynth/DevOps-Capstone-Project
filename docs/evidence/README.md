@@ -10,8 +10,8 @@ pytest → Docker (non-root) → GitHub Actions → Trivy gate → GHCR (:sha) �
 
 | | |
 | :--- | :--- |
-| **Repository** | <https://github.com/NeuralSynth/devops-heros-s21-liftlog> |
-| **Green pipeline** | <https://github.com/NeuralSynth/devops-heros-s21-liftlog/actions/runs/38958529088> |
+| **Repository** | <https://github.com/NeuralSynth/DevOps-Capstone-Project> |
+| **Green pipeline** | <https://github.com/NeuralSynth/DevOps-Capstone-Project/actions/runs/38958529088> |
 | **Images** | `ghcr.io/neuralsynth/liftlog-backend`, `ghcr.io/neuralsynth/liftlog-frontend` (tagged with the commit SHA) |
 | **Cloud** | AWS project `863461559558`, region **ap-southeast-2**, EKS **1.36**, 2 × `m7i-flex.large` |
 | **Project README** | [`README.md`](../../README.md): features, API, local run, CI/CD, EKS deployment |
@@ -67,7 +67,7 @@ docker run --rm -v ${PWD}:/src:ro python:3.12-slim sh -c "cp -r /src /app && cd 
 
 ## M3 — Git and GitHub
 
-- Public repo: <https://github.com/NeuralSynth/devops-heros-s21-liftlog>, with **19 commits**, each describing its change. `github-actions[bot]` commits are the GitOps deploys.
+- Public repo: <https://github.com/NeuralSynth/DevOps-Capstone-Project>, with **19 commits**, each describing its change. `github-actions[bot]` commits are the GitOps deploys.
 - [`.gitignore`](../../.gitignore) excludes `.env`, `__pycache__/`, `node_modules/`, `.venv/`, `venv/`, Terraform state and `*.tfvars`.
 
 ![M3 — Commit history](./SS/M3-01-commit-history.png)
