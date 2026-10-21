@@ -63,7 +63,7 @@ function Dashboard({ stats, workouts, go }) {
   const groups = Object.entries(stats.volume_by_muscle_group_30d);
   const max = Math.max(1, ...groups.map(([, v]) => v));
   return (<>
-    <Header eyebrow="OVERVIEW" title="Ready to train?" subtitle="Your training at a glance." action={<button className="primary" onClick={() => go('log')}>＋ Log workout</button>} />
+    <Header eyebrow="OVERVIEW" title="Ready to train? 💪" subtitle="Your training at a glance." action={<button className="primary" onClick={() => go('log')}>＋ Log workout</button>} />
     <section className="stats">
       <Stat label="Workouts (7 days)" value={stats.workouts_last_7_days} icon="📅" />
       <Stat label="Volume (7 days)" value={kg(stats.volume_last_7_days_kg)} icon="🏋" />
